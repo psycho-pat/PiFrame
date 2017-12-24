@@ -209,7 +209,7 @@ function update() {
 
 function shutdownPframe() {
   return fetch("shutDownPframe").then(() => {
-    alert("shutting down…");
+    console.log("shutting donw…");
   }).catch(() => {
     alert("unable to shut down!");
   })
