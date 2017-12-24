@@ -29,6 +29,7 @@ const pictures = $("#pictures");
 const footer = $("footer");
 const skipNext = $("#next");
 const skipPrev = $("#prev");
+const poweroff = $("#poweroff");
 const close = $("#close");
 const gear = $("#gear");
 const settings = $("#settings");
@@ -191,8 +192,8 @@ function img(src) {
   return elem;
 }
 
-function update(url) {
-  return fetch(url).then(imgs => {
+function update() {
+  return fetch("getImages").then(imgs => {
     const div = document.querySelector("#pictures > div");
     const rep = div.cloneNode();
     return imgs.json().then(json => {
@@ -206,17 +207,23 @@ function update(url) {
   }).then(next);
 }
 
+function shutdownPframe() {
+  return fetch("shutDownPframe").then(() => {
+    alert("shutting down…");
+  }).catch(() => {
+    alert("unable to shut down!");
+  })
+}
+
 
 /*
  * Shutdown and update interval.
  */
 function setShutdown(val) {
   window.clearTimeout(shutdown);
-  shutdown = window.setTimeout(callShutdown, val * 1000);
-}
-
-function callShutdown() {
-  console.log("shutdown");
+  if (shutdown > 0) {
+    shutdown = window.setTimeout(shutdownPframe, val * 60 * 60 * 1000);
+  }
 }
 
 function updateInterval(val) {
@@ -231,7 +238,7 @@ function initShutdownAndInterval() {
   selectSetting("interval", intervalValue);
   selectSetting("shutdown", shutdownValue);
   interval = window.setInterval(next, intervalValue * 1000);
-  update("getImages");
+  update();
 }
 
 function init() {
@@ -239,6 +246,11 @@ function init() {
   pictures.addEventListener("click", toggleOverlay);
   gear.addEventListener("click", toggleSettings);
   close.addEventListener("click", hideOverlay);
+  poweroff.addEventListener("click", () => {
+    if (window.confirm("Shutdown PiFrame?")) {
+      shutdownPframe();
+    }
+  });
   skipNext.addEventListener("click", next);
   skipPrev.addEventListener("click", prev);
   initShutdownAndInterval();

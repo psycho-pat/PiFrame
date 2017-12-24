@@ -16,7 +16,7 @@ var picturePath = os.Args[2]
 
 func shutDownPframe(w http.ResponseWriter, r *http.Request) {
 	//cmd := exec.Command("poweroff")
-	cmd := exec.Command("echo", "poweroff")
+	cmd := exec.Command("poweroff")
 	//cmd.Dir = picturePath
 	err := cmd.Start()
 	if err != nil {
@@ -56,7 +56,7 @@ func getImages(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.Handle(webImagePath, http.StripPrefix(webImagePath, http.FileServer(http.Dir(picturePath))))
-	http.Handle("/", http.FileServer(http.Dir(filepath.Join(path, "web/"))))
+	http.Handle("/", http.FileServer(http.Dir(path)))
 	http.Handle("/getImages", http.HandlerFunc(getImages))
 	http.Handle("/shutDownPframe", http.HandlerFunc(shutDownPframe))
 	//http.Handle("/updateAndGetImages", http.HandlerFunc(updateAndGetImages))
