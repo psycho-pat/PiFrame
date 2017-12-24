@@ -16,7 +16,7 @@ var picturePath = os.Args[2]
 
 func shutDownPframe(w http.ResponseWriter, r *http.Request) {
 	//cmd := exec.Command("poweroff")
-	cmd := exec.Command("poweroff")
+	cmd := exec.Command("sudo", "poweroff")
 	//cmd.Dir = picturePath
 	err := cmd.Start()
 	if err != nil {
