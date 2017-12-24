@@ -1,0 +1,139 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(MaterialIcons-Regular.woff2) format('woff2');
+}
+:root {
+  --overlay-height: 20vh;
+  --overlay-color: rgba(255, 255, 255, 0.7);
+  --mark-color: rgba(0, 0, 0, 0.2);
+}
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  margin: 0px;
+  background-color: black;
+}
+
+body * {
+  width: 100%;
+}
+
+header {
+  height: var(--overlay-height);
+  background-color: var(--overlay-color);
+  display: none;
+  z-index: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#pictures {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 100vh;
+  z-index: 0;
+}
+
+#settings {
+  border-top: solid 2vh rgba(0, 0, 0, 0.2);
+  border-bottom: solid 2vh rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  background-color: var(--overlay-color);
+}
+
+#settings form {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  height: 50%;
+}
+
+.settings-container {
+  display: block;
+  position: relative;
+  -webkit-user-select: none;
+}
+
+.settings-container input {
+  height: 100%;
+  opacity: 0;
+  margin: 0px;
+  position: absolute;
+}
+
+.checkmark {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.settings-container input:checked ~ .checkmark {
+  background-color: var(--mark-color);
+}
+
+footer {
+  height: var(--overlay-height);
+  background-color: var(--overlay-color);
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+  display: none;
+  z-index: 1;
+}
+
+.material-icons {
+  margin: 0px 1vw;
+  -webkit-user-select: none;
+  width: auto;
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: var(--overlay-height);
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+}
+
+img.opague {
+  opacity: 1;
+}
+
+img {
+  max-width: 100vw;
+  max-height: 100vh;
+  width:auto;
+  height:auto;
+  border: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  transition: opacity 1s ease-in-out;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  image-orientation: from-image;
+}
