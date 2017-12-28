@@ -73,7 +73,7 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir(path)))
 	http.Handle("/getImages", http.HandlerFunc(getImages))
 	http.Handle("/shutDownPframe", http.HandlerFunc(shutDownPframe))
-	//http.Handle("/updateAndGetImages", http.HandlerFunc(updateAndGetImages))
+	http.Handle("/updateAndGetImages", http.HandlerFunc(updateAndGetImages))
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
