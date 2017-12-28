@@ -15,8 +15,8 @@ var path = os.Args[1]
 var picturePath = os.Args[2]
 
 func rotateImages(path string){
-	cmd := exec.Command("exifautotran", (path + "/*"))
-	//cmd.Dir = picturePath
+	cmd := exec.Command("exifautotran", "/*")
+	cmd.Dir = picturePath
 	err := cmd.Start()
 	if err != nil {
 		log.Fatal(err)
@@ -53,6 +53,7 @@ func pullDrive() {
 func updateAndGetImages(w http.ResponseWriter, r *http.Request) {
 	pullDrive()
 	getImages(w, r)
+	rotateImages()
 }
 
 func getImages(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +61,6 @@ func getImages(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(pictureList)
 	pics := make([]string, len(pictureList))
 	for i := range pictureList {
-	rotateImages(picturePath)
 		pics[i] = webImagePath + filepath.Base(pictureList[i])
 	}
 	res, _ := json.Marshal(pics)
