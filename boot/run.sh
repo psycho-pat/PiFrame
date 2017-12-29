@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ~gdrive/FamilyPictureFrame
+cd ~/gdrive/FamilyPictureFrame
 exifautotran *
 cd "${0%/*}"
 cd "../"
