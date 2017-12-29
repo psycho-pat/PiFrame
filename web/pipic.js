@@ -193,7 +193,7 @@ function img(src) {
 }
 
 function update() {
-  return fetch("getImages").then(imgs => {
+  return fetch("updateAndGetImages").then(imgs => {
     const div = document.querySelector("#pictures > div");
     const rep = div.cloneNode();
     return imgs.json().then(json => {
