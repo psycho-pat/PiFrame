@@ -2,6 +2,7 @@
 const $ = (...args) => document.querySelector(...args);
 
 const INTERVAL_KEY = "interval";
+const FOLDER_KEY = "folder";
 
 const intervalValues = [
   ["5", "5s"],
@@ -19,6 +20,13 @@ const shutdownValues = [
   ["9", "9h"],
 ];
 
+const folderNames = [
+  ["new","new"],
+  ["2021","2021"],
+  ["old","old"],
+  ["2020","2020"],
+];
+
 const ICONS = {
   shutdown: "settings_power",
   interval: "update",
@@ -33,6 +41,7 @@ const poweroff = $("#poweroff");
 const close = $("#close");
 const gear = $("#gear");
 const settings = $("#settings");
+const folderSel = $("#folder-sel");
 
 const OPAGUE = "opague";
 
@@ -40,11 +49,15 @@ let current = 0;
 let interval = null;
 let shutdown = null;
 
+let folder = null;
+
 let intervalValue = "10";
 let shutdownValue = "-1";
 
 let overlayDisplay = "none";
 let settingsDisplay = "none";
+let folderSelDisplay = "none";
+
 
 function setStyle(el, style) {
   for (const key in style) {
@@ -145,6 +158,7 @@ function toggleOverlay() {
 function hideOverlay() {
   interval = window.setInterval(next, intervalValue * 1000);
   hideSettings();
+  hideFolderSel();
   overlayDisplay = "none";
   setDisplay([header, footer], overlayDisplay);
 }
@@ -154,7 +168,58 @@ function showOverlay() {
   overlayDisplay = "flex";
   setDisplay([header, footer], overlayDisplay);
 }
+/*
+ * Folder selection menu
+ */
+function toggleFolderSel(){
+  if (folderSelDisplay === "none") {
+    showFolderSel();
+  } else {
+    hideFolderSel();
+  }
+}
 
+function hideFolderSel(){
+  folderSelDisplay = "none";
+  setDisplay([folderSel],folderSelDisplay);
+}
+
+function showFolderSel(){
+  folderSelDisplay = "flex";
+  setDisplay([folderSel],folderSelDisplay);
+}
+
+function createFolderSel(){
+  const folderCallback = v => updateFolder(v);
+  const folder = folderForm("folder", folderNames, folderCallback);
+  folderSel.appendChild(folder);
+}
+
+function selectFolder(name, val) {
+  let all = [...settings.querySelectorAll(`.${name}`)];
+  let selected = all.filter(e => e.value === val)[0];
+  if (selected) {
+    selected.checked = true;
+  }
+}
+function folderForm(name, values, callback) {
+  const f = document.createElement("form");
+  const label = document.createElement("div");
+  //label.classList.add("checkmark");
+  //const i = document.createElement("i");
+  //i.classList.add("material-icons");
+  //i.textContent = ICONS[name];
+  //label.appendChild(i);
+  //f.appendChild(label);
+  for (const tuple of values) {
+    f.appendChild(settingsButton(name, tuple));
+  }
+  f.addEventListener("change", () => {
+    const val = f.querySelector("input:checked").value;
+    callback(val);
+  });
+  return f;
+}
 
 /*
  * Image update and navigation.
@@ -193,7 +258,7 @@ function img(src) {
 }
 
 function update() {
-  return fetch("updateAndGetImages").then(imgs => {
+  return fetch("updateAndGetImages?folder=" + folder).then(imgs => {
     const div = document.querySelector("#pictures > div");
     const rep = div.cloneNode();
     return imgs.json().then(json => {
@@ -226,6 +291,15 @@ function setShutdown(val) {
   }
 }
 
+function updateFolder(val)
+{
+  if (val) {
+    folder = val;
+    localStorage.setItem(FOLDER_KEY, folder);
+    update();
+  }
+}
+
 function updateInterval(val) {
   if (val) {
     intervalValue = val;
@@ -235,6 +309,7 @@ function updateInterval(val) {
 
 function initShutdownAndInterval() {
   intervalValue = localStorage.getItem(INTERVAL_KEY) || intervalValue;
+  folder = localStorage.getItem(FOLDER_KEY) || folder;
   selectSetting("interval", intervalValue);
   selectSetting("shutdown", shutdownValue);
   interval = window.setInterval(next, intervalValue * 1000);
@@ -243,8 +318,10 @@ function initShutdownAndInterval() {
 
 function init() {
   createSettings();
+  createFolderSel();
   pictures.addEventListener("click", toggleOverlay);
   gear.addEventListener("click", toggleSettings);
+  folders.addEventListener("click",toggleFolderSel);
   close.addEventListener("click", hideOverlay);
   poweroff.addEventListener("click", () => {
     if (window.confirm("Shutdown PiFrame?")) {

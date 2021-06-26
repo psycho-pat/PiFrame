@@ -7,7 +7,9 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	//"os/dir"
 	"path/filepath"
+	//"io/ioutil"
 )
 
 var webImagePath = "/images/"
@@ -28,6 +30,7 @@ func shutDownPframe(w http.ResponseWriter, r *http.Request) {
 
 func pullDrive() {
 	cmd := exec.Command("drive", "pull", "-quiet")
+	//cmd := exec.Command("gdrive", "download", "--recursive", "0B6PafHSZe3PRZ2xxbTRuZ3FMeUk", "--skip")
 	cmd.Dir = picturePath
 	err := cmd.Start()
 	if err != nil {
@@ -44,11 +47,13 @@ func updateAndGetImages(w http.ResponseWriter, r *http.Request) {
 }
 
 func getImages(w http.ResponseWriter, r *http.Request) {
-	pictureList, _ := filepath.Glob(picturePath + "/*")
+	keys, _ := r.URL.Query()["folder"]
+	folder := keys[0]
+	pictureList, _ := filepath.Glob(picturePath + "/" + folder + "/*")
 	//fmt.Println(pictureList)
 	pics := make([]string, len(pictureList))
 	for i := range pictureList {
-		pics[i] = webImagePath + filepath.Base(pictureList[i])
+		pics[i] = webImagePath + "/" + folder + "/" + filepath.Base(pictureList[i])
 	}
 	res, _ := json.Marshal(pics)
 
